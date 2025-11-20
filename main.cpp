@@ -53,5 +53,39 @@ void inicializarTabelas(){ //redimensiona os vetores globais p tamanho correto e
 cout << "Mapeamento Segmentação: Seg 0 (Base 16, Limite 64), Seg 1 (Base 80, Limite 32)..." << endl;
 }
 
+void traducaoPaginacao(int enderecoVirtual){ // traduz um ev em um ef, usando a tabela de pag
+    cout <<"MODO PAGINACAO - TRADUCAO " << endl;
+    cout << "ENDERECO VIRTUAL SOCLICITADO: " << enderecoVirtual << endl;
+
+    if(enderecoVirtual < 0 or enderecoVirtual >= TAM_MEMORIA_VIRTUAL){
+        cout << "Endereco virtual esta fora do limite de " << TAM_MEMORIA_VIRTUAL << " bytes" << endl; 
+        return;
+    }
+
+    //decomposicao do ev
+    int numPagina = enderecoVirtual / TAM_PAGINA_FRAME;
+
+    int deslocamento = enderecoVirtual % TAM_PAGINA_FRAME;
+
+    cout << "[DECOMPOSICAO DO ENDERECO VIRTUAL] " << endl;
+    cout << "Numero da pagina: " << numPagina << "(0 a " << NUM_PAGINAS - 1 << ")" << endl;
+    cout << "Deslocamento: " << deslocamento << " (0 a " << TAM_PAGINA_FRAME - 1 << ")" << endl;
+
+    EntradaPagina entrada = tabelaPagina[numPagina];
+    cout << "Buscando e verificando na tabela de paginas... " << endl;
+
+    if(entrada.estaPresente){//se estiver presente = frame encontrado
+        int numFrame = entrada.frame;
+        int enderecoFisico = (numFrame * TAM_PAGINA_FRAME) + deslocamento;
+        cout << "Pagina presente na memoria fisica " << endl;
+        cout << "numero do frame: " << numFrame << endl;
+
+        cout << "Traducao: " << endl;
+        cout << "EF: (" << numFrame << " * " << TAM_PAGINA_FRAME << ") + " << deslocamento << " = **" << enderecoFisico << "**" << endl;    
+    }
+    else{
+        cout << "Pagina nao esta na memoria fisica = PAGE FAULT" << endl;
+    }
+}    
 
 
